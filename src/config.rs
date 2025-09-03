@@ -18,8 +18,15 @@ pub fn get_config_from_env() -> Config {
             debug!("CSS path from env: {path}");
             path
         }
-        // TODO: Fix path - how will this work for packaging?
-        Err(_) => "/home/tsk/smithy/byebyemenu/style.css".to_string(),
+        Err(_) => {
+            let config_home = env::var("XDG_CONFIG_HOME")
+                .ok()
+                .or_else(|| env::var("HOME").ok().map(|h| format!("{h}/.config")));
+            let default_path = config_home
+                .map(|dir| format!("{dir}/byebyemenu/style.css"))
+                .unwrap_or_else(|| "style.css".to_string());
+            default_path
+        }
     };
     let cmd_4 = match env::var("BYEBYE_CMD_4") {
         Ok(cmd) => shell_split(&cmd).ok(),
