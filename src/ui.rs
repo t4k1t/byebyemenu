@@ -76,12 +76,9 @@ pub fn build_ui(application: &gtk::Application, config: &Config) {
     let win = window.clone();
     let control_key = gtk::EventControllerKey::new();
     control_key.connect_key_pressed(move |_, key, _, _| {
-        match key {
-            gdk::Key::Escape => {
-                win.destroy();
-                exit(0);
-            }
-            _ => (),
+        if key == gdk::Key::Escape {
+            win.destroy();
+            exit(0);
         }
         glib::Propagation::Stop
     });
