@@ -17,7 +17,7 @@ A Wayland/Niri power menu
 ▶️ **v0.2.0**
 - [x] Allow customization of all six buttons
 - [ ] Implement custom key bindings
-- [ ] Improve command parsing
+- [x] Improve command parsing
  
 🐌 **v0.3.0** - First public release
 - [ ] Add optional confirmation dialog

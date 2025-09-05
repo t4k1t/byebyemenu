@@ -1,5 +1,5 @@
 use gtk::{glib, prelude::*};
-use log::{debug, info, warn};
+use log::warn;
 use std::cell::Cell;
 use std::rc::Rc;
 
@@ -7,7 +7,6 @@ mod config;
 mod ui;
 
 use config::get_config_from_env;
-use ui::build_ui;
 
 const FALLBACK_CSS: &str = "
 box {
@@ -57,12 +56,23 @@ fn load_css_provider(css_path: &str) -> gtk::CssProvider {
 fn main() -> glib::ExitCode {
     env_logger::init();
 
-    let config = get_config_from_env();
+    let config = match get_config_from_env() {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("Configuration error: {e}");
+            return glib::ExitCode::FAILURE;
+        }
+    };
+
+    let config_for_startup = config.clone();
+    let config_for_activate = config.clone();
+
     let application = gtk::Application::builder()
         .application_id("com.github.t4k1t.byebyemenu")
         .build();
+
     application.connect_startup(move |_| {
-        let provider = load_css_provider(&config.css_path);
+        let provider = load_css_provider(&config_for_startup.css_path);
         gtk::style_context_add_provider_for_display(
             &gdk::Display::default().expect("Could not connect to default display."),
             &provider,
@@ -70,6 +80,9 @@ fn main() -> glib::ExitCode {
         );
     });
 
-    application.connect_activate(build_ui);
+    application.connect_activate(move |app| {
+        crate::ui::build_ui(app, &config_for_activate);
+    });
+
     application.run()
 }

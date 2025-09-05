@@ -1,7 +1,14 @@
-use crate::config::get_config_from_env;
+use crate::config::Config;
 use gtk::{self, glib, prelude::*};
+use log::warn;
 use std::process::Command;
 use std::process::exit;
+
+fn execute_command(cmd: &[String]) {
+    if let Err(e) = Command::new(&cmd[0]).args(&cmd[1..]).status() {
+        warn!("Failed to execute command {cmd:?}: {e}");
+    }
+}
 
 fn build_label(text: &str) -> gtk::Label {
     gtk::Label::builder()
@@ -11,98 +18,51 @@ fn build_label(text: &str) -> gtk::Label {
         .build()
 }
 
-// TODO: Configuration: custom button labels; custom keybindings; hide/show keybings
-pub fn build_ui(application: &gtk::Application) {
-    let config = get_config_from_env();
-    // Layout
+pub fn build_ui(application: &gtk::Application, config: &Config) {
     let container = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
         .build();
-    let button_row_1 = gtk::Box::builder()
+
+    let button_row_default = gtk::Box::builder()
         .orientation(gtk::Orientation::Horizontal)
         .build();
-    let button_row_2 = gtk::Box::builder()
+    let button_row_custom = gtk::Box::builder()
         .orientation(gtk::Orientation::Horizontal)
         .build();
 
     // Default buttons
-    let button_exit = gtk::Button::builder().valign(gtk::Align::Center).build();
-    button_exit.set_child(Some(&build_label(
-        config.label_1.as_deref().unwrap_or("_exit"),
-    )));
-    button_exit.add_css_class("button1");
-
-    let button_shutdown = gtk::Button::builder().build();
-    button_shutdown.set_child(Some(&build_label(
-        config.label_2.as_deref().unwrap_or("_shutdown"),
-    )));
-    button_shutdown.add_css_class("button2");
-
-    let button_reboot = gtk::Button::builder().build();
-    button_reboot.set_child(Some(&build_label(
-        config.label_3.as_deref().unwrap_or("_reboot"),
-    )));
-    button_reboot.add_css_class("button3");
-
-    button_row_1.append(&button_exit);
-    button_row_1.append(&button_shutdown);
-    button_row_1.append(&button_reboot);
-    container.append(&button_row_1);
-
-    // Custom buttons
-    let mut custom_buttons: Vec<gtk::Button> = vec![];
-    if let (Some(cmd), Some(label)) = (&config.cmd_4, &config.label_4) {
-        let btn = gtk::Button::builder().label(label).build();
-        let cmd = cmd.clone();
-        btn.connect_clicked(move |_| {
-            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+    for i in 0..3 {
+        let action = &config.actions[i];
+        let button = gtk::Button::builder().valign(gtk::Align::Center).build();
+        button.set_child(Some(&build_label(
+            action.label.as_deref().unwrap_or("_unnamed"),
+        )));
+        button.add_css_class(&format!("button{}", i + 1));
+        let cmd = action.command.clone().unwrap();
+        button.connect_clicked(move |_| {
+            execute_command(&cmd);
         });
-        custom_buttons.push(btn);
+        button_row_default.append(&button);
     }
-    if let (Some(cmd), Some(label)) = (&config.cmd_5, &config.label_5) {
-        let btn = gtk::Button::builder().label(label).build();
-        let cmd = cmd.clone();
-        btn.connect_clicked(move |_| {
-            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-        });
-        custom_buttons.push(btn);
-    }
-    if let (Some(cmd), Some(label)) = (&config.cmd_6, &config.label_6) {
-        let btn = gtk::Button::builder().label(label).build();
-        let cmd = cmd.clone();
-        btn.connect_clicked(move |_| {
-            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-        });
-        custom_buttons.push(btn);
-    }
+    container.append(&button_row_default);
 
+    // Optional custom buttons
+    let mut custom_buttons = Vec::new();
+    for i in 3..6 {
+        let action = &config.actions[i];
+        if let (Some(cmd), Some(label)) = (&action.command, &action.label) {
+            let button = gtk::Button::builder().label(label).build();
+            let cmd = cmd.clone();
+            button.connect_clicked(move |_| {
+                execute_command(&cmd);
+            });
+            button_row_custom.append(&button);
+            custom_buttons.push(button);
+        }
+    }
     if !custom_buttons.is_empty() {
-        container.append(&button_row_2);
-
-        // TODO: Fix commands in case there are no args
-        let _ = &custom_buttons[0].connect_clicked(move |_| {
-            if let Some(cmd) = &config.cmd_4 {
-                let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-            };
-        });
-        button_row_2.append(&custom_buttons[0]);
-    };
-    if custom_buttons.len() > 1 {
-        let _ = &custom_buttons[1].connect_clicked(move |_| {
-            if let Some(cmd) = &config.cmd_5 {
-                let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-            };
-        });
-        button_row_2.append(&custom_buttons[1]);
-    };
-    if custom_buttons.len() > 2 {
-        let _ = &custom_buttons[2].connect_clicked(move |_| {
-            if let Some(cmd) = &config.cmd_6 {
-                let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-            };
-        });
-        button_row_2.append(&custom_buttons[2]);
-    };
+        container.append(&button_row_custom);
+    }
 
     let window = gtk::ApplicationWindow::builder()
         .application(application)
@@ -126,22 +86,6 @@ pub fn build_ui(application: &gtk::Application) {
         glib::Propagation::Stop
     });
     window.add_controller(control_key);
-
-    button_exit.connect_clicked(move |_| {
-        if let Some(cmd) = &config.cmd_1 {
-            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-        }
-    });
-    button_shutdown.connect_clicked(move |_| {
-        if let Some(cmd) = &config.cmd_2 {
-            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-        }
-    });
-    button_reboot.connect_clicked(move |_| {
-        if let Some(cmd) = &config.cmd_3 {
-            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
-        }
-    });
 
     window.connect_close_request(move |window| {
         if let Some(application) = window.application() {
