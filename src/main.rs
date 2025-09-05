@@ -3,7 +3,6 @@ use log::{debug, info, warn};
 use std::cell::Cell;
 use std::rc::Rc;
 
-mod actions;
 mod config;
 mod ui;
 

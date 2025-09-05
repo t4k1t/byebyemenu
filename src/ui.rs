@@ -1,4 +1,3 @@
-use crate::actions::{do_exit, do_reboot, do_shutdown};
 use crate::config::get_config_from_env;
 use gtk::{self, glib, prelude::*};
 use std::process::Command;
@@ -29,15 +28,21 @@ pub fn build_ui(application: &gtk::Application) {
 
     // Default buttons
     let button_exit = gtk::Button::builder().valign(gtk::Align::Center).build();
-    button_exit.set_child(Some(&build_label("_exit")));
+    button_exit.set_child(Some(&build_label(
+        config.label_1.as_deref().unwrap_or("_exit"),
+    )));
     button_exit.add_css_class("button1");
 
     let button_shutdown = gtk::Button::builder().build();
-    button_shutdown.set_child(Some(&build_label("_shutdown")));
+    button_shutdown.set_child(Some(&build_label(
+        config.label_2.as_deref().unwrap_or("_shutdown"),
+    )));
     button_shutdown.add_css_class("button2");
 
     let button_reboot = gtk::Button::builder().build();
-    button_reboot.set_child(Some(&build_label("_reboot")));
+    button_reboot.set_child(Some(&build_label(
+        config.label_3.as_deref().unwrap_or("_reboot"),
+    )));
     button_reboot.add_css_class("button3");
 
     button_row_1.append(&button_exit);
@@ -47,13 +52,30 @@ pub fn build_ui(application: &gtk::Application) {
 
     // Custom buttons
     let mut custom_buttons: Vec<gtk::Button> = vec![];
-    if config.cmd_4.is_some() {
-        custom_buttons.push(
-            gtk::Button::builder()
-                .label(config.label_4.unwrap())
-                .build(),
-        );
-    };
+    if let (Some(cmd), Some(label)) = (&config.cmd_4, &config.label_4) {
+        let btn = gtk::Button::builder().label(label).build();
+        let cmd = cmd.clone();
+        btn.connect_clicked(move |_| {
+            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+        });
+        custom_buttons.push(btn);
+    }
+    if let (Some(cmd), Some(label)) = (&config.cmd_5, &config.label_5) {
+        let btn = gtk::Button::builder().label(label).build();
+        let cmd = cmd.clone();
+        btn.connect_clicked(move |_| {
+            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+        });
+        custom_buttons.push(btn);
+    }
+    if let (Some(cmd), Some(label)) = (&config.cmd_6, &config.label_6) {
+        let btn = gtk::Button::builder().label(label).build();
+        let cmd = cmd.clone();
+        btn.connect_clicked(move |_| {
+            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+        });
+        custom_buttons.push(btn);
+    }
 
     if !custom_buttons.is_empty() {
         container.append(&button_row_2);
@@ -100,17 +122,6 @@ pub fn build_ui(application: &gtk::Application) {
                 win.destroy();
                 exit(0);
             }
-            // TODO: The below is not stricly necessary anymore because of mnemonic, but it could
-            // still be optional
-            // gdk::Key::e => {
-            //     do_exit();
-            // }
-            // gdk::Key::s => {
-            //     do_shutdown();
-            // }
-            // gdk::Key::r => {
-            //     do_reboot();
-            // }
             _ => (),
         }
         glib::Propagation::Stop
@@ -118,13 +129,19 @@ pub fn build_ui(application: &gtk::Application) {
     window.add_controller(control_key);
 
     button_exit.connect_clicked(move |_| {
-        do_exit();
+        if let Some(cmd) = &config.cmd_1 {
+            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+        }
     });
     button_shutdown.connect_clicked(move |_| {
-        do_shutdown();
+        if let Some(cmd) = &config.cmd_2 {
+            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+        }
     });
     button_reboot.connect_clicked(move |_| {
-        do_reboot();
+        if let Some(cmd) = &config.cmd_3 {
+            let _ = Command::new(&cmd[0]).args(&cmd[1..]).status();
+        }
     });
 
     window.connect_close_request(move |window| {

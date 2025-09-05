@@ -4,9 +4,15 @@ use std::env;
 
 pub struct Config {
     pub css_path: String,
+    pub cmd_1: Option<Vec<String>>,
+    pub cmd_2: Option<Vec<String>>,
+    pub cmd_3: Option<Vec<String>>,
     pub cmd_4: Option<Vec<String>>,
     pub cmd_5: Option<Vec<String>>,
     pub cmd_6: Option<Vec<String>>,
+    pub label_1: Option<String>,
+    pub label_2: Option<String>,
+    pub label_3: Option<String>,
     pub label_4: Option<String>,
     pub label_5: Option<String>,
     pub label_6: Option<String>,
@@ -28,26 +34,69 @@ pub fn get_config_from_env() -> Config {
             default_path
         }
     };
-    let cmd_4 = match env::var("BYEBYE_CMD_4") {
+    // TODO: Actually use cmd_1-3
+    // TODO: Default values for cmd_1-3
+    // TODO: Actually use label_1-6
+    // TODO: Actually load label_1-6 from env
+    // TODO: Refactor (variable names, better way to read from env, code duplication)
+    let cmd_1 = match env::var("BBMENU_ACTION1_CMD") {
+        Ok(cmd) => shell_split(&cmd).ok(),
+        Err(_) => Some(vec![
+            "/usr/bin/loginctl".to_string(),
+            "terminate-user".to_string(),
+            env::var("USER").unwrap_or_default(),
+        ]), // Default: exit
+    };
+    let cmd_2 = match env::var("BBMENU_ACTION2_CMD") {
+        Ok(cmd) => shell_split(&cmd).ok(),
+        Err(_) => Some(vec![
+            "/usr/bin/systemctl".to_string(),
+            "poweroff".to_string(),
+        ]), // Default: shutdown
+    };
+    let cmd_3 = match env::var("BBMENU_ACTION3_CMD") {
+        Ok(cmd) => shell_split(&cmd).ok(),
+        Err(_) => Some(vec!["/usr/bin/systemctl".to_string(), "reboot".to_string()]), // Default: reboot
+    };
+    let cmd_4 = match env::var("BBMENU_ACTION4_CMD") {
         Ok(cmd) => shell_split(&cmd).ok(),
         Err(_) => None,
     };
-    let cmd_5 = match env::var("BYEBYE_CMD_5") {
+    let cmd_5 = match env::var("BBMENU_ACTION5_CMD") {
         Ok(cmd) => shell_split(&cmd).ok(),
         Err(_) => None,
     };
-    let cmd_6 = match env::var("BYEBYE_CMD_6") {
+    let cmd_6 = match env::var("BBMENU_ACTION6_CMD") {
         Ok(cmd) => shell_split(&cmd).ok(),
         Err(_) => None,
     };
 
+    let label_1 = env::var("BBMENU_ACTION1_LABEL")
+        .ok()
+        .or(Some("_exit".to_string()));
+    let label_2 = env::var("BBMENU_ACTION2_LABEL")
+        .ok()
+        .or(Some("_shutdown".to_string()));
+    let label_3 = env::var("BBMENU_ACTION3_LABEL")
+        .ok()
+        .or(Some("_reboot".to_string()));
+    let label_4 = env::var("BBMENU_ACTION4_LABEL").ok();
+    let label_5 = env::var("BBMENU_ACTION5_LABEL").ok();
+    let label_6 = env::var("BBMENU_ACTION6_LABEL").ok();
+
     Config {
         css_path,
+        cmd_1,
+        cmd_2,
+        cmd_3,
         cmd_4,
         cmd_5,
         cmd_6,
-        label_4: Some(String::from("Custom #1\n(1)")),
-        label_5: Some(String::from("Custom #2\n(2)")),
-        label_6: Some(String::from("Custom #3\n(3)")),
+        label_1,
+        label_2,
+        label_3,
+        label_4,
+        label_5,
+        label_6,
     }
 }
