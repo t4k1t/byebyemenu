@@ -19,8 +19,12 @@ A Wayland/Niri power menu
 - [x] Improve command parsing
  
 🐌 **v0.3.0** - First public release
+- [ ] Unit tests
+- [ ] Documentation
+
+🦥 **v0.4.0**
 - [ ] Add optional confirmation dialog
 - [ ] Implement custom key bindings
 
-🦥 **v0.4.0**
-- [ ] ???
+🐢 **v0.4.0**
+- [ ] TOML config
