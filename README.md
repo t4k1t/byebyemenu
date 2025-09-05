@@ -5,6 +5,22 @@ A Wayland/Niri power menu
 ## Environment variables
 
 - *BYEBYE_CSS_PATH*: Path to custom CSS file.
-- *BYEBYE_CMD_4*: Command to run on activating button 4.
-- *BYEBYE_CMD_5*: Command to run on activating button 5.
-- *BYEBYE_CMD_6*: Command to run on activating button 6.
+- *BBMENU_ACTION4_CMD*: Command to run on activating button 4.
+- *BBMENU_ACTION5_CMD*: Command to run on activating button 5.
+- *BBMENU_ACTION6_CMD*: Command to run on activating button 6.
+- *BBMENU_ACTION4_LABEL*: Label for button 4.
+- *BBMENU_ACTION5_LABEL*: Label for button 5.
+- *BBMENU_ACTION6_LABEL*: Label for button 6.
+
+## Roadmap
+
+▶️ **v0.2.0**
+- [x] Allow customization of all six buttons
+- [ ] Implement custom key bindings
+- [ ] Improve command parsing
+ 
+🐌 **v0.3.0** - First public release
+- [ ] Add optional confirmation dialog
+
+🦥 **v0.4.0**
+- [ ] ???
