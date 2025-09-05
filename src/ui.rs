@@ -11,7 +11,6 @@ fn build_label(text: &str) -> gtk::Label {
         .build()
 }
 
-// TODO: Allow customization of all buttons
 // TODO: Configuration: custom button labels; custom keybindings; hide/show keybings
 pub fn build_ui(application: &gtk::Application) {
     let config = get_config_from_env();

@@ -34,10 +34,6 @@ pub fn get_config_from_env() -> Config {
             default_path
         }
     };
-    // TODO: Actually use cmd_1-3
-    // TODO: Default values for cmd_1-3
-    // TODO: Actually use label_1-6
-    // TODO: Actually load label_1-6 from env
     // TODO: Refactor (variable names, better way to read from env, code duplication)
     let cmd_1 = match env::var("BBMENU_ACTION1_CMD") {
         Ok(cmd) => shell_split(&cmd).ok(),
@@ -45,7 +41,7 @@ pub fn get_config_from_env() -> Config {
             "/usr/bin/loginctl".to_string(),
             "terminate-user".to_string(),
             env::var("USER").unwrap_or_default(),
-        ]), // Default: exit
+        ]), // Default: exit session
     };
     let cmd_2 = match env::var("BBMENU_ACTION2_CMD") {
         Ok(cmd) => shell_split(&cmd).ok(),
