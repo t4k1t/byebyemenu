@@ -91,3 +91,28 @@ pub fn build_ui(application: &gtk::Application, config: &Config) {
         glib::Propagation::Proceed
     });
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_build_label_sets_text_and_properties() {
+        let _ = gtk::init();
+        let label = build_label("_Bye Bye");
+
+        // Styling
+        assert_eq!(label.justify(), gtk::Justification::Center);
+        // Mnemonic
+        assert_eq!(label.label(), "_Bye Bye");
+        assert_eq!(label.text(), "Bye Bye");
+        assert_eq!(label.mnemonic_keyval(), gdk::Key::B);
+    }
+
+    #[test]
+    fn test_execute_command_handles_failure() {
+        let cmd = vec!["nonexistent_command_xyz".to_string()];
+        // Don't panic on invalid command
+        execute_command(&cmd);
+    }
+}
