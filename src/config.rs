@@ -30,7 +30,7 @@ fn parse_command_or_error(
 }
 
 pub fn get_config_from_env() -> Result<Config, String> {
-    let css_path = match env::var("BYEBYE_CSS_PATH") {
+    let css_path = match env::var("BBMENU_CSS_PATH") {
         Ok(path) => {
             debug!("CSS path from env: {path}");
             path
@@ -143,7 +143,7 @@ mod tests {
     fn test_config_env_defaults() {
         let _lock = ENV_VAR_MUTEX.lock().unwrap();
         unsafe {
-            env::remove_var("BYEBYE_CSS_PATH");
+            env::remove_var("BBMENU_CSS_PATH");
             env::remove_var("XDG_CONFIG_HOME");
             env::set_var("HOME", "/tmp/testhome");
         }
@@ -161,7 +161,7 @@ mod tests {
     fn test_config_env_custom_css() {
         let _lock = ENV_VAR_MUTEX.lock().unwrap();
         unsafe {
-            env::set_var("BYEBYE_CSS_PATH", "/custom/path/style.css");
+            env::set_var("BBMENU_CSS_PATH", "/custom/path/style.css");
         }
         let config = get_config_from_env().unwrap();
         assert_eq!(config.css_path, "/custom/path/style.css");
@@ -173,7 +173,7 @@ mod tests {
         unsafe {
             env::set_var("BBMENU_ACTION2_CMD", "shutdown now");
             env::set_var("BBMENU_ACTION2_LABEL", "Shutdown!");
-            env::remove_var("BYEBYE_CSS_PATH");
+            env::remove_var("BBMENU_CSS_PATH");
         }
         let config = get_config_from_env().unwrap();
         assert_eq!(
