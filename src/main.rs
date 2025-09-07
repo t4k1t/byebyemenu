@@ -57,32 +57,35 @@ fn main() -> glib::ExitCode {
     env_logger::init();
 
     let config = match get_config_from_env() {
-        Ok(cfg) => cfg,
+        Ok(cfg) => Rc::new(cfg),
         Err(e) => {
             eprintln!("Configuration error: {e}");
             return glib::ExitCode::FAILURE;
         }
     };
 
-    let config_for_startup = config.clone();
-    let config_for_activate = config.clone();
-
     let application = gtk::Application::builder()
         .application_id("com.github.t4k1t.byebyemenu")
         .build();
 
-    application.connect_startup(move |_| {
-        let provider = load_css_provider(&config_for_startup.css_path);
-        gtk::style_context_add_provider_for_display(
-            &gdk::Display::default().expect("Could not connect to default display."),
-            &provider,
-            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-        );
-    });
+    {
+        let config = config.clone();
+        application.connect_startup(move |_| {
+            let provider = load_css_provider(&config.css_path);
+            gtk::style_context_add_provider_for_display(
+                &gdk::Display::default().expect("Could not connect to default display."),
+                &provider,
+                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+            );
+        });
+    }
 
-    application.connect_activate(move |app| {
-        crate::ui::build_ui(app, &config_for_activate);
-    });
+    {
+        let config = config.clone();
+        application.connect_activate(move |app| {
+            crate::ui::build_ui(app, &config);
+        });
+    }
 
     application.run()
 }
