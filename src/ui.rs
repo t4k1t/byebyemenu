@@ -80,7 +80,7 @@ pub fn build_ui(application: &gtk::Application, config: &Config) {
             win.destroy();
             exit(0);
         }
-        glib::Propagation::Stop
+        glib::Propagation::Proceed
     });
     window.add_controller(control_key);
 
