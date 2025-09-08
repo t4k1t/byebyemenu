@@ -33,10 +33,12 @@ pub fn build_ui(application: &gtk::Application, config: &Config) {
     // Default buttons
     for i in 0..3 {
         let action = &config.actions[i];
-        let button = gtk::Button::builder().valign(gtk::Align::Center).build();
-        button.set_child(Some(&build_label(
-            action.label.as_deref().unwrap_or("_unnamed"),
-        )));
+        let label_text = action.label.as_deref().unwrap_or("_unnamed");
+        let button = gtk::Button::builder()
+            .valign(gtk::Align::Center)
+            .label(label_text)
+            .use_underline(true)
+            .build();
         button.add_css_class(&format!("button{}", i + 1));
         let cmd = action.command.clone().unwrap();
         button.connect_clicked(move |_| {
