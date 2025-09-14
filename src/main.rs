@@ -10,15 +10,13 @@ use config::get_config_from_env;
 
 const FALLBACK_CSS: &str = "
 box {
-    background: #282828;
-    border: 1px solid #282828;
+    padding: 2px;
 }
 button {
     min-width: 120px;
     min-height: 120px;
-    border: 1px solid #282828;
-    border-radius: 0px;
-    padding: 4px;
+    margin: 4px;
+    font-size: 1.2rem;
 }
 ";
 
