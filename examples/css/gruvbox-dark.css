@@ -1,0 +1,16 @@
+box {
+    padding: 4px;
+    background-color: #282828;
+}
+button {
+    min-width: 120px;
+    min-height: 120px;
+    margin: 4px;
+    font-size: 1.2rem;
+    background-color: #282828;
+    color: #EBDBB2;
+}
+button:focus {
+    background-color: #D79921;
+    color: #282828;
+}
