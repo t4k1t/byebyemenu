@@ -1,6 +1,7 @@
 use gtk::{glib, prelude::*};
 use log::warn;
 use std::cell::Cell;
+use std::path::Path;
 use std::rc::Rc;
 
 mod config;
@@ -10,7 +11,7 @@ use config::get_config_from_env;
 
 const FALLBACK_CSS: &str = "
 box {
-    padding: 2px;
+    padding: 4px;
 }
 button {
     min-width: 120px;
@@ -37,7 +38,12 @@ fn load_css_provider(css_path: &str) -> gtk::CssProvider {
         });
     }
 
-    provider.load_from_path(css_path);
+    if Path::new(css_path).exists() {
+        provider.load_from_path(css_path);
+    } else {
+        warn!("CSS file {css_path} does not exist, falling back to embedded CSS.");
+        provider.load_from_string(FALLBACK_CSS);
+    }
 
     if had_error.get() {
         warn!("Failed to load CSS from path: {css_path}, falling back to embedded CSS.");
