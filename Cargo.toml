@@ -2,6 +2,14 @@
 name = "byebyemenu"
 version = "0.3.0"
 edition = "2024"
+license = "MIT"
+description = "A minimal, customizable power menu for Wayland compositors. ByeByeMenu displays up to six configurable buttons for custom actions and supports custom styling via CSS."
+authors = ["Thomas Kager <t4k1t+dev@protonmail.com>"]
+repository = "https://github.com/t4k1t/byebyemenu"
+readme = "README.md"
+keywords = ["wayland", "gtk4", "power-menu", "rust"]
+categories = [""]
+exclude = [".github/*", "justfile"]
 
 [dependencies]
 env_logger = "0.11"
