@@ -1,6 +1,7 @@
 use gtk::{glib, prelude::*};
 use log::warn;
 use std::cell::Cell;
+use std::env;
 use std::path::Path;
 use std::rc::Rc;
 
@@ -57,8 +58,19 @@ fn load_css_provider(css_path: &str) -> gtk::CssProvider {
     provider
 }
 
+fn get_version_from_env() -> String {
+    env!("CARGO_PKG_VERSION").to_string()
+}
+
 fn main() -> glib::ExitCode {
     env_logger::init();
+
+    // CLI args
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1 && (args[1] == "--version" || args[1] == "-V") {
+        println!("byebyemenu {}", get_version_from_env());
+        return glib::ExitCode::SUCCESS;
+    }
 
     let config = match get_config_from_env() {
         Ok(cfg) => Rc::new(cfg),
