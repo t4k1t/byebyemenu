@@ -28,3 +28,9 @@ alias cov := coverage
 @debug:
     echo "Running with debug logging"
     RUST_LOG=debug cargo run
+
+@preview-man:
+    pandoc docs/src/byebyemenu.1.md -s -t man | man -l -
+
+@build-man:
+    pandoc docs/src/byebyemenu.1.md -s -t man | gzip --stdout - > docs/man/byebyemenu.1.gz
