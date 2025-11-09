@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - man page
 - `-V|--version` CLI arg
+- `-h|--help` CLI arg
+- this changelog
+
+### Fixed
+
+- Fixed mnemonics for custom button labels
+
+### Changed
+
+- Updated dependencies
 
 ## [0.3.0] - 2025-10-26
 
