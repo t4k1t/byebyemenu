@@ -1,6 +1,6 @@
 [package]
 name = "byebyemenu"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2024"
 license = "MIT"
 description = "A minimal, customizable power menu for Wayland compositors. ByeByeMenu displays up to six configurable buttons for custom actions and supports custom styling via CSS."
