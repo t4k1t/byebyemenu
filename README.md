@@ -110,8 +110,10 @@ ByeByeMenu is distributed under the terms of the [MIT](https://spdx.org/licenses
 - [x] Documentation
 
 🦥 **v0.4.0**
+- [x] Publish on crates.io
+- [x] Add man pages
+
+🐢 **v0.5.0**
+- [ ] TOML config
 - [ ] Add optional confirmation dialog
 - [ ] Implement custom key bindings
-
-🐢 **v0.4.0**
-- [ ] TOML config
