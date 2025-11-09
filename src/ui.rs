@@ -82,7 +82,10 @@ pub fn build_ui(application: &gtk::Application, config: &Config) {
     // Optional custom buttons
     let mut custom_buttons = Vec::new();
     for (label, cmd) in get_custom_buttons(config) {
-        let button = gtk::Button::builder().label(&label).build();
+        let button = gtk::Button::builder()
+            .label(&label)
+            .use_underline(true)
+            .build();
         let cmd = cmd.clone();
         button.connect_clicked(move |_| {
             execute_command(&cmd);
