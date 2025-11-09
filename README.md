@@ -1,6 +1,6 @@
 # ByeByeMenu
 
-A minimal, customizable power menu for Wayland compositors (such as [Niri](https://github.com/YaLTeR/niri)). Written in Rust with GTK4.
+A minimal, customizable power menu for Wayland compositors (such as [niri](https://github.com/YaLTeR/niri)). Written in Rust with GTK4.
 
 ByeByeMenu displays up to six configurable buttons for custom actions. By default, the first three buttons allow you to log out, shut down, or reboot. Custom styling can be supplied via a CSS file.
 

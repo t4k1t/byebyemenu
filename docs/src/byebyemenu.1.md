@@ -12,7 +12,7 @@ byebyemenu - A minimal, customizable power menu for Wayland compositors
 
 # DESCRIPTION
 
-A minimal, customizable power menu for Wayland compositors (such as [Niri](https://github.com/YaLTeR/niri)). Written in Rust with GTK4.
+A minimal, customizable power menu for Wayland compositors (such as [niri](https://github.com/YaLTeR/niri)). Written in Rust with GTK4.
 
 # OPTIONS
 
