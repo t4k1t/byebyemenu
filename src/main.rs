@@ -67,10 +67,19 @@ fn main() -> glib::ExitCode {
 
     // CLI args
     let args: Vec<String> = env::args().collect();
-    if args.len() > 1 && (args[1] == "--version" || args[1] == "-V") {
+    if args.len() > 1 && (args[1] == "--help" || args[1] == "-h") {
+        let help_text = "Usage: byebyemenu [OPTIONS]
+
+Options:
+  -V, --version  Show the version and exit.
+  -h, --help     Show this message and exit.
+";
+        print!("{}", help_text);
+        return glib::ExitCode::SUCCESS;
+    } else if args.len() > 1 && (args[1] == "--version" || args[1] == "-V") {
         println!("byebyemenu {}", get_version_from_env());
         return glib::ExitCode::SUCCESS;
-    }
+    };
 
     let config = match get_config_from_env() {
         Ok(cfg) => Rc::new(cfg),
